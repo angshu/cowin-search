@@ -37,35 +37,56 @@ app.get('', (req,res) => {
 })
 
 
-app.post('/searchByDistrict', async (req, res) => {
+app.post('/searchForCenters', async (req, res) => {
     const { 
-        districtId, 
+        districtId,
+        pincode, 
         appDate,
-        ageGroup
+        ageGroup,
+        searchBy
     } = req.body
 
-    if (!districtId || !appDate) {
+    if (!searchBy || !appDate) {
         return res.status(404).send({
-            error: "Please provide all information"
+            error: "Please provide Date"
         })
     }
+
+    if (searchBy === 'district' && !districtId) {
+        return res.status(404).send({
+            error: "Please provide district id"
+        })
+    } 
+
+    if (searchBy === 'pincode' && !pincode) {
+        return res.status(404).send({
+            error: "Please provide pincode"
+        })
+    } 
 
     try {
         const otphash = createHash('sha256').update('121416').digest('hex')
         console.log("otp hash:" + otphash)
-        const schedules = await Cowin.getByDistrict(districtId, appDate)
+        const schedules = searchBy === 'pincode' ? await Cowin.getByPincode(pincode, appDate) : await Cowin.getByDistrict(districtId, appDate)
         const centers = schedules.data.centers
         console.log("unfiltered count:" + centers.length)
-        const filterAgeGroup = parseInt(ageGroup || 45)
-        const availableCentersWithAge = centers.filter(function(c)  {
+        const ageLimit = ageGroup || 0;
+        const filterAgeGroup = parseInt(ageLimit)
+        const availableCenters = centers.filter(function(c)  {
             if (c.sessions.length === 0)  {
                return false;
             }
-            return c.sessions.find(e => e.available_capacity > 0 && e.min_age_limit === filterAgeGroup);
+            return c.sessions.find(function(session) {
+                if (filterAgeGroup > 0) {
+                    return session.available_capacity > 0 && session.min_age_limit === filterAgeGroup;  
+                } else {
+                    return session.available_capacity > 0;
+                }
+            });
         })
-        console.log("filtered count:" + availableCentersWithAge.length)
+        console.log("filtered count:" + availableCenters.length)
         return res.json({
-            centers: availableCentersWithAge,
+            centers: availableCenters,
             message: "COWIN API call succeeded"
         })
 

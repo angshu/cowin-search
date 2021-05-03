@@ -14,7 +14,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
-<body>
+<body onload="initializePage()">
     {{>header}}
     <div class="container">
         <ul class="nav nav-tabs">
@@ -30,11 +30,22 @@
             <div class="main-content container-fluid tab-pane container active" id="schedule">
                 <div class="row justify-content-center align-items-center">
                     <div class="col-sm-5">
-                        <form id="info">
+                        <form id="scheduleForm">
                             <fieldset>
                                 <div class="form-group">
+                                    <label for="selectSearchOption">Search By</label>
+                                    <select class="browser-default custom-select" name="selectSearchOption" id="selectSearchOption">
+                                        <option value="district">District</option>
+                                        <option value="pincode">Pincode</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" id="divDistrict">
                                     <label for="districtId">District</label>
                                     <input class="form-control" id="districtId" type="text" placeholder="District ID">
+                                </div>
+                                <div class="form-group" id="divPincode">
+                                    <label for="pincode">Pincode</label>
+                                    <input class="form-control" id="pincode" type="text" placeholder="Pincode">
                                 </div>
                                 <div class="form-group">
                                     <label for="appDate">Date</label>
@@ -44,7 +55,7 @@
                                     <label for="ageGroup">Age</label>
                                     <input class="form-control" id="ageGroup" type="number" value="45">
                                 </div>
-                                <button class="btn btn-outline-primary" id="btnSearchByDistrict">Get Schedule</button>
+                                <button class="btn btn-outline-primary" id="btnSearchForSchedule">Get Schedule</button>
                             </fieldset>
                         </form>
                     </div>

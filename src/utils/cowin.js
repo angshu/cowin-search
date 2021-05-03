@@ -13,5 +13,16 @@ module.exports = {
             district_id:districtId,
             date:apptDate
         }
+    }),
+    getByPincode: (pincode, apptDate) => axios({
+        method:"GET",
+        url : APP_BASE_URL + `/calendarByPin`,
+        headers: {
+            "content-type":"application/x-www-form-urlencoded"
+        },
+        params: {
+            pincode:pincode,
+            date:apptDate
+        }
     })
 }

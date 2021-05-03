@@ -1,27 +1,43 @@
 
-const btnSearchByDistrict = document.querySelector('#btnSearchByDistrict');
+const btnSearchForSchedule = document.querySelector('#btnSearchForSchedule');
 const districtIdInput = document.querySelector('#districtId');
 const appDateInput = document.querySelector('#appDate');
 const ageGroupInput = document.querySelector('#ageGroup');
 const messageOne = document.querySelector('.message-1');
-document.querySelector('#btnSearchByDistrict');
+const selectSearchOption = document.querySelector('#selectSearchOption');
+const pincodeInput = document.querySelector('#pincode');
 
-btnSearchByDistrict.addEventListener('click', (e) => {
+selectSearchOption.addEventListener('change', (e) => {
+    if (selectSearchOption.value === 'district') {
+        document.getElementById("divDistrict").style.display = "block";
+        document.getElementById("divPincode").style.display = "none";
+    } else {
+        document.getElementById("divDistrict").style.display = "none";
+        document.getElementById("divPincode").style.display = "block";
+    }
+})
+
+
+btnSearchForSchedule.addEventListener('click', (e) => {
     e.preventDefault();
-
+    
     const districtId = districtIdInput.value;
     const appDate = appDateInput.value;
     const ageGroup = ageGroupInput.value;
+    const pincode = pincodeInput.value;
+    const searchBy = selectSearchOption.value;
     
     messageOne.textContent = 'Loading..';
 
     const data = {
         districtId,
         appDate,
-        ageGroup
+        ageGroup,
+        pincode,
+        searchBy
     }
 
-    fetch('/searchByDistrict', {
+    fetch("/searchForCenters", {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
@@ -58,4 +74,8 @@ const renderSearchResultForDistrict = function(centers) {
             districtCell.innerHTML = c.district_name;
         });
     }           
+}
+
+const initializePage = function() {
+    document.getElementById("divPincode").style.display = "none";
 }
