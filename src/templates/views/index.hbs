@@ -6,55 +6,67 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
      
     <!-- styles -->
     <link rel="stylesheet" href="css/styles.css" />
     <title>{{ title }}</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
     {{>header}}
-    <div class="main-content container-fluid">
-        <div class="row justify-content-center align-items-center">
-            <div class="col-sm-5">
-                <form id="info">
-                    <fieldset>
-                        <div class="form-group">
-                            <label for="districtId">District</label>
-                            <input class="form-control" id="districtId" type="text" placeholder="District ID">
-                        </div>
-                        <div class="form-group">
-                            <label for="appDate">Date</label>
-                            <input class="form-control" id="appDate" type="text">
-                        </div>
-                        <div class="form-group">
-                            <label for="ageGroup">Age</label>
-                            <input class="form-control" id="ageGroup" type="number" value="45">
-                        </div>
-                        <button class="btn btn-outline-primary" id="btnSearchByDistrict">Get Schedule</button>
-                    </fieldset>
-                </form>
+    <div class="container">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#schedule">Schedule</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#login">Login</a>
+            </li>
+        </ul>
+    
+        <div class="tab-content">
+            <div class="main-content container-fluid tab-pane container active" id="schedule">
+                <div class="row justify-content-center align-items-center">
+                    <div class="col-sm-5">
+                        <form id="info">
+                            <fieldset>
+                                <div class="form-group">
+                                    <label for="districtId">District</label>
+                                    <input class="form-control" id="districtId" type="text" placeholder="District ID">
+                                </div>
+                                <div class="form-group">
+                                    <label for="appDate">Date</label>
+                                    <input class="form-control" id="appDate" type="text">
+                                </div>
+                                <div class="form-group">
+                                    <label for="ageGroup">Age</label>
+                                    <input class="form-control" id="ageGroup" type="number" value="45">
+                                </div>
+                                <button class="btn btn-outline-primary" id="btnSearchByDistrict">Get Schedule</button>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+                <div class="row justify-content-center align-items-center">
+                    <div class="col-sm-6">
+                        <p class="message-1 lead"></p>
+                        <table id="districtSearchResultTable" class="ui table segment">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Pincode</th>
+                                    <th>District</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div> 
+                </div>
             </div>
-                 
+            <div class="tab-pane container fade" id="login">TBD</div>
         </div>
-    </div>
-    <div class="row justify-content-center align-items-center">
-        <div class="col-sm-6">
-                <h2>RESULT:</h2>
-                <p class="message-1 lead"></p>
-                <table id="districtSearchResultTable" class="ui table segment">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Pincode</th>
-                            <th>District</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-                <h2>COMMENTS:</h2>
-                <blockquote class="message-2"></blockquote>
-            </div> 
     </div>
     
 

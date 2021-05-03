@@ -4,7 +4,6 @@ const districtIdInput = document.querySelector('#districtId');
 const appDateInput = document.querySelector('#appDate');
 const ageGroupInput = document.querySelector('#ageGroup');
 const messageOne = document.querySelector('.message-1');
-const messageTwo = document.querySelector('.message-2');
 document.querySelector('#btnSearchByDistrict');
 
 btnSearchByDistrict.addEventListener('click', (e) => {
@@ -37,7 +36,6 @@ btnSearchByDistrict.addEventListener('click', (e) => {
             } else {
                 messageOne.textContent = "Results";
                 renderSearchResultForDistrict(data.centers);
-                messageTwo.textContent = data.message;
             }
         })
     })
