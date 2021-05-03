@@ -1,5 +1,6 @@
 # cowin-search
-- Requires Node
+- Requires Npm/node
 
 # Run
+- npm install 
 - cd src && node app.js
