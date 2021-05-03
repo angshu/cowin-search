@@ -50,7 +50,7 @@ btnSearchForSchedule.addEventListener('click', (e) => {
             if (data.error) {
                 messageOne.textContent = data.error;
             } else {
-                messageOne.textContent = "Results";
+                messageOne.textContent = "Results: Found - " + data.centers.length;
                 renderSearchResultForDistrict(data.centers);
             }
         })
