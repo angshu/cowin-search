@@ -14,69 +14,33 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
-<body onload="initializePage()">
+<body">
     {{>header}}
     <div class="container">
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a class="nav-link active" data-toggle="tab" href="#schedule">Schedule</a>
+                <a id="linkShowSchedule" class="nav-link active" data-toggle="tab" href="#schedule">Schedule</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#login">Login</a>
+                <a id="linkShowLogin" class="nav-link" data-toggle="tab" href="#login">Login</a>
             </li>
         </ul>
     
         <div class="tab-content">
             <div class="main-content container-fluid tab-pane container active" id="schedule">
+                {{>searchschedule}}
+            </div>
+            <div class="tab-pane container fade" id="login">
                 <div class="row justify-content-center align-items-center">
-                    <div class="col-sm-5">
-                        <form id="scheduleForm">
-                            <fieldset>
-                                <div class="form-group">
-                                    <label for="selectSearchOption">Search By</label>
-                                    <select class="browser-default custom-select" name="selectSearchOption" id="selectSearchOption">
-                                        <option value="district">District</option>
-                                        <option value="pincode">Pincode</option>
-                                    </select>
-                                </div>
-                                <div class="form-group" id="divDistrict">
-                                    <label for="districtId">District</label>
-                                    <input class="form-control" id="districtId" type="text" placeholder="District ID">
-                                </div>
-                                <div class="form-group" id="divPincode">
-                                    <label for="pincode">Pincode</label>
-                                    <input class="form-control" id="pincode" type="text" placeholder="Pincode">
-                                </div>
-                                <div class="form-group">
-                                    <label for="appDate">Date</label>
-                                    <input class="form-control" id="appDate" type="text">
-                                </div>
-                                <div class="form-group">
-                                    <label for="ageGroup">Age</label>
-                                    <input class="form-control" id="ageGroup" type="number" value="45">
-                                </div>
-                                <button class="btn btn-outline-primary" id="btnSearchForSchedule">Get Schedule</button>
-                            </fieldset>
-                        </form>
+                    {{>generateotp}}
+                    {{>submitotp}}
+                    <div class="row justify-content-center align-items-center">
+                        <div class="col-sm-6">
+                            <p class="message-1 lead"></p>
+                        </div> 
                     </div>
                 </div>
-                <div class="row justify-content-center align-items-center">
-                    <div class="col-sm-6">
-                        <p class="message-1 lead"></p>
-                        <table id="districtSearchResultTable" class="ui table segment">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Pincode</th>
-                                    <th>District</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div> 
-                </div>
             </div>
-            <div class="tab-pane container fade" id="login">TBD</div>
         </div>
     </div>
     

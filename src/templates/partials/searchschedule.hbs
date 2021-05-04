@@ -1,0 +1,59 @@
+<div class="row justify-content-center align-items-center">
+    <div class="col-sm-5">
+        <form id="scheduleForm">
+            <fieldset>
+                <div class="form-group">
+                    <label for="selectSearchOption">Search By</label>
+                    <select class="browser-default custom-select" name="selectSearchOption" id="selectSearchOption">
+                        <option value="district">District</option>
+                        <option value="pincode">Pincode</option>
+                    </select>
+                </div>
+                <div class="form-group" id="divDistrict">
+                    <label for="districtId">District</label>
+                    <input class="form-control" id="districtId" type="text" placeholder="District ID">
+                </div>
+                <div class="form-group" id="divPincode" style="display: none;">
+                    <label for="pincode">Pincode</label>
+                    <input class="form-control" id="pincode" type="text" placeholder="Pincode">
+                </div>
+                <div class="form-group">
+                    <label for="appDate">Date</label>
+                    <input class="form-control" id="appDate" type="text">
+                </div>
+                <div class="form-group">
+                    <label for="ageGroup">Age</label>
+                    <input class="form-control" id="ageGroup" type="number" value="45">
+                </div>
+                <div class="form-group">
+                    <div class = "row">
+                        <div class="col">
+                            <input type="checkbox" class="form-check-input" id="voiceNotify">
+                            <label class="form-check-label" for="voiceNotify">Voice notify?</label>
+                        </div>
+                        <div class="col">
+                            <input type="checkbox" class="form-check-input" id="keepPolling">
+                            <label class="form-check-label" for="keepPolling">Poll (every 1m for 30m)?</label>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-outline-primary" id="btnSearchForSchedule">Get Schedule</button>
+            </fieldset>
+        </form>
+    </div>
+</div>
+<div class="row justify-content-center align-items-center">
+    <div class="col-sm-6">
+        <p class="message-1 lead"></p>
+        <table id="districtSearchResultTable" class="ui table segment">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Pincode</th>
+                    <th>District</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div> 
+</div>

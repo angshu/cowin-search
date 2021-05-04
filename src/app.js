@@ -40,10 +40,11 @@ app.get('', (req,res) => {
 app.post('/searchForCenters', async (req, res) => {
     const { 
         districtId,
-        pincode, 
         appDate,
         ageGroup,
-        searchBy
+        pincode, 
+        searchBy,
+        token
     } = req.body
 
     if (!searchBy || !appDate) {
@@ -65,9 +66,8 @@ app.post('/searchForCenters', async (req, res) => {
     } 
 
     try {
-        const otphash = createHash('sha256').update('121416').digest('hex')
-        console.log("otp hash:" + otphash)
-        const schedules = searchBy === 'pincode' ? await Cowin.getByPincode(pincode, appDate) : await Cowin.getByDistrict(districtId, appDate)
+        console.log("token => ", token)
+        const schedules = searchBy === 'pincode' ? await Cowin.getByPincode(pincode, appDate, token) : await Cowin.getByDistrict(districtId, appDate, token)
         const centers = schedules.data.centers
         console.log("unfiltered count:" + centers.length)
         const ageLimit = ageGroup || 0;
@@ -97,6 +97,55 @@ app.post('/searchForCenters', async (req, res) => {
         })
     }
 })
+
+
+app.post('/generateOTP', async (req, res) => {
+    const { mobileNumber } = req.body
+
+    if (!mobileNumber) {
+        return res.status(404).send({
+            error: "Please provide Mobile Number"
+        })
+    }
+
+    const result = await Cowin.generateOTP(mobileNumber)
+    try {
+        return res.json({
+            txnId: result.data.txnId, //"TXN1", //result.data.txnId,
+            message: "COWIN API call succeeded"
+        })
+
+    } catch(e) {
+        console.log(e)
+        return res.status(500).json({
+            error: "error generating otp"
+        })
+    }
+})
+
+app.post('/confirmOTP', async (req, res) => {
+    const { otptxnId, otpValue } = req.body
+    
+    if (!otptxnId || !otpValue) {
+        return res.status(404).send({
+            error: "Please provide OTP"
+        })
+    }
+    const otphash = createHash('sha256').update(otpValue).digest('hex')
+    const result = await Cowin.confirmOTP(otphash, otptxnId)
+    try {
+        return res.json({
+            token: result.data.token,//otphash, //result.data.token,
+            message: "COWIN API call succeeded"
+        })
+
+    } catch(e) {
+        console.log(e)
+        return res.status(500).json({
+            error: "error confirming otp"
+        })
+    }
+})  
 
 // Catch all route, renders 404 page
 app.get('*', (req, res) => {

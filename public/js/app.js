@@ -1,13 +1,6 @@
-
-const btnSearchForSchedule = document.querySelector('#btnSearchForSchedule');
-const districtIdInput = document.querySelector('#districtId');
-const appDateInput = document.querySelector('#appDate');
-const ageGroupInput = document.querySelector('#ageGroup');
-const messageOne = document.querySelector('.message-1');
-const selectSearchOption = document.querySelector('#selectSearchOption');
-const pincodeInput = document.querySelector('#pincode');
-
-selectSearchOption.addEventListener('change', (e) => {
+(function(){
+document.querySelector('#selectSearchOption').addEventListener('change', (e) => {
+    var selectSearchOption = document.querySelector('#selectSearchOption');
     if (selectSearchOption.value === 'district') {
         document.getElementById("divDistrict").style.display = "block";
         document.getElementById("divPincode").style.display = "none";
@@ -17,24 +10,90 @@ selectSearchOption.addEventListener('change', (e) => {
     }
 })
 
+document.querySelector('#linkShowLogin').addEventListener('click', (e) => {
+    document.getElementById("divMobileForm").style.display = "block";
+    document.getElementById("divOtpForm").style.display = "none";
+})
 
-btnSearchForSchedule.addEventListener('click', (e) => {
+var otptxnId, token;
+document.querySelector('#btnSubmitMobile').addEventListener('click', (e) => {
     e.preventDefault();
+    const data = { mobileNumber : document.querySelector('#mobileNumber').value }
+    token = null;
+    fetch("/generateOTP", {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(response => {
+        response.json()
+        .then((data) => {
+            if (data.error) {
+                document.querySelector('.message-1').textContent = data.error;
+            } else {
+                console.log("otp generate => ", data)
+                otptxnId = data.txnId;
+            }
+        })
+    })
+    document.getElementById("divMobileForm").style.display = "none";
+    document.getElementById("divOtpForm").style.display = "block";
+})
+
+document.querySelector('#btnSubmitOtp').addEventListener('click', (e) => {
+    e.preventDefault();
+    const otpValue = document.querySelector('#otpInput').value;
+    const data = { otptxnId, otpValue}
+
+    fetch("/confirmOTP", {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(response => {
+        response.json()
+        .then((data) => {
+            if (data.error) {
+                document.querySelector('.message-1').textContent = data.error;
+            } else {
+                console.log("otp confirmation => ", data)
+                token = data.token;
+                document.getElementById("divMobileForm").style.display = "none";
+                document.getElementById("divOtpForm").style.display = "none";
+                document.getElementById("linkShowSchedule").click();
+            }
+        })
+    })
     
-    const districtId = districtIdInput.value;
-    const appDate = appDateInput.value;
-    const ageGroup = ageGroupInput.value;
-    const pincode = pincodeInput.value;
-    const searchBy = selectSearchOption.value;
+})
+
+document.querySelector('#btnSearchForSchedule').addEventListener('click', (e) => {
+    e.preventDefault();
+    const keepPolling = document.querySelector('#keepPolling').checked;
+    if (keepPolling) {
+        crawl(0);
+    }
+    querySchedule();
+})
+
+const querySchedule = function() {
+    const districtId = document.querySelector('#districtId').value;
+    const appDate = document.querySelector('#appDate').value;
+    const ageGroup = document.querySelector('#ageGroup').value;
+    const pincode = document.querySelector('#pincode').value;
+    const searchBy = document.querySelector('#selectSearchOption').value;
     
-    messageOne.textContent = 'Loading..';
+    document.querySelector('.message-1').textContent = 'Loading..';
 
     const data = {
         districtId,
         appDate,
         ageGroup,
         pincode,
-        searchBy
+        searchBy,
+        token
     }
 
     fetch("/searchForCenters", {
@@ -48,14 +107,25 @@ btnSearchForSchedule.addEventListener('click', (e) => {
         response.json()
         .then((data) => {
             if (data.error) {
-                messageOne.textContent = data.error;
+                document.querySelector('.message-1').textContent = data.error;
             } else {
-                messageOne.textContent = "Results: Found - " + data.centers.length;
+                voiceNotify("Search complete. Found " + data.centers.length); 
+                document.querySelector('.message-1').textContent = "Results: Found - " + data.centers.length;
                 renderSearchResultForDistrict(data.centers);
             }
         })
     })
-})
+}
+
+const crawl = function(counter) {
+    if(counter < 6) {
+        querySchedule();
+        setTimeout(function() {
+            counter++;
+            crawl(counter);
+        }, 60000);
+    }
+}
 
 const renderSearchResultForDistrict = function(centers) {
     var tbody = document.getElementById("districtSearchResultTable").getElementsByTagName('tbody')[0];
@@ -76,6 +146,48 @@ const renderSearchResultForDistrict = function(centers) {
     }           
 }
 
-const initializePage = function() {
-    document.getElementById("divPincode").style.display = "none";
+var synth = window.speechSynthesis;
+var voices = [];
+const populateVoiceList = function() {
+    if (!synth) {
+        console.log("Could not initiate speech synthesis. Check your browser settings.");
+        return;
+    }
+    voices = synth.getVoices().sort(function (a, b) {
+        const aname = a.name.toUpperCase(), bname = b.name.toUpperCase();
+        if ( aname < bname ) return -1;
+        else if ( aname == bname ) return 0;
+        else return +1;
+    });
 }
+
+const voiceNotify = function(textToSpeak) {
+    if (!synth) {
+        return;
+    }
+    const notifyByVoice = document.querySelector('#voiceNotify').checked;
+    if (!notifyByVoice) {
+        return;
+    }
+
+    if (synth.speaking) {
+        console.error('speechSynthesis.speaking');
+        return;
+    }
+    var utterThis = new SpeechSynthesisUtterance(textToSpeak);
+    utterThis.onend = function (event) {
+        console.log('SpeechSynthesisUtterance.onend');
+    }
+    utterThis.onerror = function (event) {
+        console.error('SpeechSynthesisUtterance.onerror');
+    }
+
+    utterThis.voice = voices[0];
+    utterThis.pitch = "0.6";
+    utterThis.rate = "0.8";
+    synth.speak(utterThis);
+}
+
+populateVoiceList();
+
+})()
