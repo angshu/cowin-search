@@ -3,4 +3,4 @@
 
 # Run
 - npm install 
-- cd src && node app.js
+- npm start
