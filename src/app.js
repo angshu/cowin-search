@@ -36,6 +36,37 @@ app.get('', (req,res) => {
     })
 })
 
+app.get('/states', async (req,res) => {
+    const result = await Cowin.getStates()
+    try {
+        return res.json({
+            result: result.data, 
+            message: "Fetched states"
+        })
+    } catch(e) {
+        console.log(e)
+        return res.status(500).json({
+            error: "error getting state list"
+        })
+    }
+})
+
+app.get('/districts/:stateId', async (req,res) => {
+    const stateId = req.params.stateId;
+    const result = await Cowin.getDistricts(stateId)
+    try {
+        return res.json({
+            result: result.data, 
+            message: "Fetched District list"
+        })
+    } catch(e) {
+        console.log(e)
+        return res.status(500).json({
+            error: "error getting district list"
+        })
+    }
+})
+
 
 app.post('/searchForCenters', async (req, res) => {
     const { 

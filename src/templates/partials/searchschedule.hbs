@@ -10,8 +10,19 @@
                     </select>
                 </div>
                 <div class="form-group" id="divDistrict">
-                    <label for="districtId">District</label>
-                    <input class="form-control" id="districtId" type="text" placeholder="District ID">
+                    <div class = "form-row">
+                        <div class="col">
+                            <label for="stateList">State</label>
+                            <select class="browser-default custom-select" name="stateList" id="stateList">
+                                <option value="">Select State</option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label for="districtId">District</label>
+                            <select class="browser-default custom-select" name="districtList" id="districtList">
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group" id="divPincode" style="display: none;">
                     <label for="pincode">Pincode</label>
@@ -19,14 +30,14 @@
                 </div>
                 <div class="form-group">
                     <label for="appDate">Date</label>
-                    <input class="form-control" id="appDate" type="text">
+                    <input class="form-control" id="appDate" type="text" placeholder="mention 01-06-2021 for 1st June">
                 </div>
                 <div class="form-group">
-                    <label for="ageGroup">Age</label>
-                    <input class="form-control" id="ageGroup" type="number" value="45">
+                    <label for="ageGroup">Age (18/45 or empty)</label>
+                    <input class="form-control" id="ageGroup" type="number" value="45" placeholder="mention 18 or 45 or leave empty">
                 </div>
                 <div class="form-group">
-                    <div class = "row">
+                    <div class = "form-row">
                         <div class="col">
                             <input type="checkbox" class="form-check-input" id="voiceNotify">
                             <label class="form-check-label" for="voiceNotify">Voice notify?</label>

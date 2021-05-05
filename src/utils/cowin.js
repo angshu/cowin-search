@@ -62,5 +62,21 @@ module.exports = {
             otp:otphash, 
             txnId:txnId
         }
+    }),
+    getStates: () => axios({
+        method:"GET",
+        url : APP_BASE_URL + `/admin/location/states`,
+        headers: {
+            "accept": "application/json",
+            "content-type": "application/json"
+        }
+    }),
+    getDistricts: (stateId) => axios({
+        method:"GET",
+        url : APP_BASE_URL + `/admin/location/districts/` + stateId,
+        headers: {
+            "accept": "application/json",
+            "content-type": "application/json"
+        }
     })
 }
