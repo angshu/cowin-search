@@ -123,8 +123,9 @@ app.post('/searchForCenters', async (req, res) => {
 
     } catch(e) {
         console.log(e)
+        var statusCode = e.response.status || "unknown";
         return res.status(500).json({
-            error: "Something went wrong"
+            error: "Something went wrong. Http Status: " + statusCode
         })
     }
 })

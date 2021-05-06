@@ -1,14 +1,17 @@
 const axios = require("axios");
 
 const APP_BASE_URL = `https://cdn-api.co-vin.in/api/v2`
+const USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/42.0"
 
 module.exports = {
     getByDistrict: (districtId, apptDate, authToken) => {
         const headers = authToken ? {
             "content-type":"application/x-www-form-urlencoded",
             "Authorization":"Bearer " + authToken,
+            "user-agent": USER_AGENT
         } : {
-            "content-type":"application/x-www-form-urlencoded"
+            "content-type":"application/x-www-form-urlencoded",
+            "user-agent": USER_AGENT
         };
 
         return axios({
@@ -24,9 +27,11 @@ module.exports = {
     getByPincode: (pincode, apptDate, authToken) => {
         const headers = authToken ? {
             "content-type":"application/x-www-form-urlencoded",
+            "user-agent": USER_AGENT,
             "Authorization":"Bearer " + authToken,
         } : {
-            "content-type":"application/x-www-form-urlencoded"
+            "content-type":"application/x-www-form-urlencoded",
+            "user-agent": USER_AGENT
         };
         
         return   axios({
@@ -46,7 +51,8 @@ module.exports = {
             url : APP_BASE_URL + `/auth/public/generateOTP`,
             headers: {
                 "accept": "application/json",
-                "content-type": "application/json"
+                "content-type": "application/json",
+                "user-agent": USER_AGENT
             },
             data: data
         })  
@@ -56,7 +62,8 @@ module.exports = {
         url : APP_BASE_URL + `/auth/public/confirmOTP`,
         headers: {
             "accept": "application/json",
-            "content-type": "application/json"
+            "content-type": "application/json",
+            "user-agent": USER_AGENT
         },
         data: {
             otp:otphash, 
@@ -68,7 +75,8 @@ module.exports = {
         url : APP_BASE_URL + `/admin/location/states`,
         headers: {
             "accept": "application/json",
-            "content-type": "application/json"
+            "content-type": "application/json",
+            "user-agent": USER_AGENT
         }
     }),
     getDistricts: (stateId) => axios({
@@ -76,7 +84,8 @@ module.exports = {
         url : APP_BASE_URL + `/admin/location/districts/` + stateId,
         headers: {
             "accept": "application/json",
-            "content-type": "application/json"
+            "content-type": "application/json",
+            "user-agent": USER_AGENT
         }
     })
 }
