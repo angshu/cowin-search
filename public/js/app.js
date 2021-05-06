@@ -131,6 +131,7 @@ const querySchedule = function() {
         .then((data) => {
             if (data.error) {
                 document.querySelector('.message-1').textContent = data.error;
+                document.querySelector('#keepPolling').checked = false;
             } else {
                 document.querySelector('.message-1').textContent = "Results: Found - " + data.centers.length;
                 showSearchResults(data.centers);
