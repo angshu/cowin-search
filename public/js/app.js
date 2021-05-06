@@ -78,6 +78,20 @@ document.querySelector('#btnSearchForSchedule').addEventListener('click', (e) =>
     querySchedule();
 })
 
+var myPrefs = { "centers": [] }; 
+document.querySelector('#btnSubmitPref').addEventListener('click', (e) => {
+    e.preventDefault();
+    var favCenters = document.getElementById("favCenters").value;
+    if (favCenters && favCenters.trim()) {
+        var centerList = favCenters.split(",").filter(e => e.trim() != "");
+        myPrefs.centers = [];
+        if (centerList.length > 0) {
+            myPrefs.centers = centerList.map(e => e.trim());
+        }
+    }
+    document.getElementById("linkShowSchedule").click();
+})
+
 const querySchedule = function() {
     const districtId = document.querySelector('#districtList').value;
     const appDate = document.querySelector('#appDate').value;
@@ -109,9 +123,8 @@ const querySchedule = function() {
             if (data.error) {
                 document.querySelector('.message-1').textContent = data.error;
             } else {
-                voiceNotify("Search complete. Found " + data.centers.length); 
                 document.querySelector('.message-1').textContent = "Results: Found - " + data.centers.length;
-                renderSearchResultForDistrict(data.centers);
+                showSearchResults(data.centers);
             }
         })
     })
@@ -120,6 +133,11 @@ const querySchedule = function() {
 const crawl = function(counter) {
     if(counter < 30) {
         querySchedule();
+        const keepPolling = document.querySelector('#keepPolling').checked;
+        if (!keepPolling) {
+            console.log("Polling stopped.")
+            return;
+        }
         setTimeout(function() {
             counter++;
             crawl(counter);
@@ -127,22 +145,36 @@ const crawl = function(counter) {
     }
 }
 
-const renderSearchResultForDistrict = function(centers) {
+const showSearchResults = function(centers) {
     var tbody = document.getElementById("districtSearchResultTable").getElementsByTagName('tbody')[0];
     while (tbody.rows.length > 0) {
         tbody.deleteRow(0);
     }
     
     if (centers) {
+        var foundMatchingPref = false;
         centers.forEach(c => {
             var row = tbody.insertRow();
-            var nameCell = row.insertCell(0);
+            var centereIdCell = row.insertCell(0);
+            centereIdCell.innerHTML = c.center_id;
+            var nameCell = row.insertCell(1);
             nameCell.innerHTML = c.name;
-            var pinCell = row.insertCell(1);
+            var pinCell = row.insertCell(2);
             pinCell.innerHTML = c.pincode;
-            var districtCell = row.insertCell(2);
+            var districtCell = row.insertCell(3);
             districtCell.innerHTML = c.district_name;
+
+            if (myPrefs.centers.includes(c.center_id.toString())) {
+                row.style.backgroundColor = '#ff0000';
+                foundMatchingPref = true;
+            }
         });
+
+        var speechText = "Search complete. Found " + centers.length;
+        if (foundMatchingPref) {
+            speechText = speechText + ". Few match your preferences."
+        }
+        voiceNotify(speechText); 
     }           
 }
 

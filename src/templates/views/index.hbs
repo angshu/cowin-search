@@ -24,6 +24,9 @@
             <li class="nav-item">
                 <a id="linkShowLogin" class="nav-link" data-toggle="tab" href="#login">Login</a>
             </li>
+            <li class="nav-item">
+                <a id="linkShowLogin" class="nav-link" data-toggle="tab" href="#myPref">Preferences</a>
+            </li>
         </ul>
     
         <div class="tab-content">
@@ -40,6 +43,9 @@
                         </div> 
                     </div>
                 </div>
+            </div>
+            <div class="tab-pane container fade" id="myPref">
+                {{>prefs}}
             </div>
         </div>
     </div>
