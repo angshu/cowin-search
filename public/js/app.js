@@ -78,7 +78,7 @@ document.querySelector('#btnSearchForSchedule').addEventListener('click', (e) =>
     querySchedule();
 })
 
-var myPrefs = { "centers": [] }; 
+var myPrefs = { "centers": [], "pincodes" : [] }; 
 document.querySelector('#btnSubmitPref').addEventListener('click', (e) => {
     e.preventDefault();
     var favCenters = document.getElementById("favCenters").value;
@@ -89,6 +89,15 @@ document.querySelector('#btnSubmitPref').addEventListener('click', (e) => {
             myPrefs.centers = centerList.map(e => e.trim());
         }
     }
+    var favPinccodes = document.getElementById("favPincodes").value;
+    if (favPinccodes && favPinccodes.trim()) {
+        var pincodes = favPinccodes.split(",").filter(e => e.trim() != "");
+        myPrefs.pincodes = [];
+        if (pincodes.length > 0) {
+            myPrefs.pincodes = pincodes.map(e => e.trim());
+        }
+    }
+    
     document.getElementById("linkShowSchedule").click();
 })
 
@@ -150,21 +159,44 @@ const showSearchResults = function(centers) {
     while (tbody.rows.length > 0) {
         tbody.deleteRow(0);
     }
+
+    const populateCell = function (cell, value) {
+        cell.innerHTML = value;
+    }
     
     if (centers) {
         var foundMatchingPref = false;
         centers.forEach(c => {
             var row = tbody.insertRow();
-            var centereIdCell = row.insertCell(0);
-            centereIdCell.innerHTML = c.center_id;
-            var nameCell = row.insertCell(1);
-            nameCell.innerHTML = c.name;
-            var pinCell = row.insertCell(2);
-            pinCell.innerHTML = c.pincode;
-            var districtCell = row.insertCell(3);
-            districtCell.innerHTML = c.district_name;
-
+            populateCell(row.insertCell(0), c.center_id);
+            populateCell(row.insertCell(1), c.name);
+            populateCell(row.insertCell(2), c.pincode);
+            populateCell(row.insertCell(3), c.district_name);
+            const centerSessions = c.sessions.filter(sess => sess.available_capacity > 0)
+                    .map(function(cs) {
+                        var res = {};
+                        res.capacity = cs.available_capacity;
+                        res.date = cs.date;
+                        res.vaccine = cs.vaccine;
+                        return res;
+                    });
+            const vaccineGroup = centerSessions.reduce(function (acc, obj) {
+                                    let key = obj["vaccine"]
+                                    if (!acc[key]) {
+                                        acc[key] = []
+                                    }
+                                    acc[key].push(obj)
+                                    return acc
+                                }, {});
+            var slots = [];                    
+            for (var v in vaccineGroup) {
+                slots.push(vaccineDates = v + ": " + vaccineGroup[v].map(cs => cs.date + "(" + cs.capacity + ")").join());
+            }
+            populateCell(row.insertCell(4), slots.join());
             if (myPrefs.centers.includes(c.center_id.toString())) {
+                row.style.backgroundColor = '#ff0000';
+                foundMatchingPref = true;
+            } else if (myPrefs.pincodes.includes(c.pincode.toString())) {
                 row.style.backgroundColor = '#ff0000';
                 foundMatchingPref = true;
             }
