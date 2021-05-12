@@ -74,8 +74,9 @@ document.querySelector('#btnSearchForSchedule').addEventListener('click', (e) =>
     const keepPolling = document.querySelector('#keepPolling').checked;
     if (keepPolling) {
         crawl(0);
+    } else {
+        querySchedule();
     }
-    querySchedule();
 })
 
 var myPrefs = { "centers": [], "pincodes" : [] }; 
@@ -140,18 +141,27 @@ const querySchedule = function() {
     })
 }
 
+const enableSearchButton = function(value) {
+    document.querySelector('#btnSearchForSchedule').disabled = !value;
+}
+
 const crawl = function(counter) {
     if(counter < 30) {
+        enableSearchButton(false);
         querySchedule();
         const keepPolling = document.querySelector('#keepPolling').checked;
         if (!keepPolling) {
             console.log("Polling stopped.")
+            enableSearchButton(true);
             return;
         }
         setTimeout(function() {
             counter++;
+            enableSearchButton(false);
             crawl(counter);
         }, 60000);
+    } else {
+        enableSearchButton(true);
     }
 }
 
