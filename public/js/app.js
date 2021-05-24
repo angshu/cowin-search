@@ -162,6 +162,7 @@ const crawl = function(counter) {
         }, 60000);
     } else {
         enableSearchButton(true);
+        voiceNotify("Pollig stopped. Click Get Schedule to retrigger.")
     }
 }
 

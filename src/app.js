@@ -109,7 +109,7 @@ app.post('/searchForCenters', async (req, res) => {
             }
             return c.sessions.find(function(session) {
                 if (filterAgeGroup > 0) {
-                    return session.available_capacity > 0 && session.min_age_limit === filterAgeGroup;  
+                    return session.available_capacity > 0 && session.min_age_limit === filterAgeGroup && session.available_capacity_dose1 > 0;  
                 } else {
                     return session.available_capacity > 0;
                 }
